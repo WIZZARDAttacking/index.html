@@ -74,33 +74,59 @@
 
 <!-- LOGIN -->
 <div class="box" id="loginBox">
-    <h2>LOGIN</h2>
-    <input type="text" id="username" placeholder="Enter your username">
-    <input type="password" id="password" placeholder="Enter your password">
-    <button class="btn-login" onclick="login()">LOGIN</button>
+    <h2>🔐 LOGIN</h2>
+    <input type="text" id="username" placeholder="Usuário: admin">
+    <input type="password" id="password" placeholder="Senha: 1234">
+    <button class="btn-login" onclick="login()">ENTRAR</button>
+    <p id="mensagemErro" style="color: #ff6b6b; margin-top: 10px; display: none;">❌ Usuário ou senha incorretos!</p>
 </div>
 
 <!-- GERADOR -->
 <div class="box hidden" id="geradorBox">
-    <h2>Gerador de Email</h2>
-
+    <h2>📧 Gerador de Email</h2>
     <input type="text" id="email" placeholder="email@cmail.asia" readonly>
-
-    <button class="gerar" onclick="gerarEmail()">Gerar Email</button>
-    <button class="copiar" onclick="copiarEmail()">Copiar Email</button>
-    <button class="verificar" onclick="verificarEmail()">Verificar Email</button>
+    <button class="gerar" onclick="gerarEmail()">🔄 Gerar Email</button>
+    <button class="copiar" onclick="copiarEmail()">📋 Copiar Email</button>
+    <button class="verificar" onclick="verificarEmail()">📨 Verificar Email</button>
 </div>
 
 <script>
 function login() {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-
+    // PEGA OS VALORES E REMOVE ESPAÇOS ANTES E DEPOIS
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+    
+    // MOSTRA NO CONSOLE PARA DEBUG (APERTA F12 PRA VER)
+    console.log("Usuário digitado: '" + user + "'");
+    console.log("Senha digitada: '" + pass + "'");
+    console.log("Tamanho do usuário: " + user.length);
+    console.log("Tamanho da senha: " + pass.length);
+    
+    // COMPARAÇÃO MAIS FLEXÍVEL
     if(user === "admin" && pass === "1234") {
+        // LOGIN CORRETO
         document.getElementById("loginBox").classList.add("hidden");
         document.getElementById("geradorBox").classList.remove("hidden");
+        
+        // GERA UM EMAIL AUTOMATICAMENTE
+        gerarEmail();
+        
+        // LIMPA OS CAMPOS DE LOGIN
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
     } else {
-        alert("Usuário ou senha incorretos!");
+        // MOSTRA MENSAGEM DE ERRO
+        const msgErro = document.getElementById("mensagemErro");
+        msgErro.style.display = "block";
+        
+        // ESCONDE A MENSAGEM DEPOIS DE 3 SEGUNDOS
+        setTimeout(function() {
+            msgErro.style.display = "none";
+        }, 3000);
+        
+        // LIMPA OS CAMPOS PARA TENTAR NOVAMENTE
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
     }
 }
 
@@ -117,21 +143,41 @@ function gerarEmail() {
 
 function copiarEmail() {
     const campo = document.getElementById("email");
+    
+    if (!campo.value) {
+        alert("⚠️ Gere um email primeiro!");
+        return;
+    }
+    
     campo.select();
     document.execCommand("copy");
-    alert("Email copiado!");
+    alert("📋 Email copiado: " + campo.value);
 }
 
 function verificarEmail() {
     const email = document.getElementById("email").value;
 
     if (!email) {
-        alert("Gere um email primeiro!");
+        alert("⚠️ Gere um email primeiro!");
         return;
     }
 
     window.open("https://temp-mail.asia/", "_blank");
 }
+
+// ADICIONA SUPORTE À TECLA ENTER
+document.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        const loginBox = document.getElementById("loginBox");
+        if (!loginBox.classList.contains("hidden")) {
+            login();
+        }
+    }
+});
+
+// MOSTRA INSTRUÇÕES NO CONSOLE
+console.log("🚀 Sistema carregado!");
+console.log("👤 Use: admin / 1234");
 </script>
 
 </body>
